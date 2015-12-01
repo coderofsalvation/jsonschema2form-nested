@@ -6,13 +6,23 @@ nested jsonschema html form builder: A simple javascript based form generator ba
 
 * zero dependencies
 * easily extendable 
+* finally a jsonform generator which supports nesting
+* 3.8K gzipped (unlike JSONform or apalca)
+
+## Usage 
+
+    npm install jsonschema2form
+
+or 
+    
+    <script src="jsonschema2form.min.js"></script>
 
 ## Basic setup
 
-  Lets assume a `<div id="form"></div>` somewhere in your html, and this javascriptcode:
+Supereasy: just a `<div id="form"></div>` somewhere in your html, and this javascriptcode:
 
     jfn = require 'jsonschema2form-nested'
-    jfn.render({ element:$('#foo')[0], schema:schema, data:data, ...});
+    jfn.render({ element:$('#foo')[0], schema:schema, data:data});
 
 ## Demo
 
