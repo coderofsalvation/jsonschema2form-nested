@@ -32,7 +32,7 @@ The default templates (residing in `jfn.template`) look like this by default:
 > HINT: you might want to override these with your own [mustache](https://www.npmjs.com/package/micromustache) :)
 #### Example: simple
 
-```<table width='100%'>
+<table width='100%'>
   <tr>
     <td width='50%'><fieldset class="jfn_2"><select><option value=""></option><option value="foo">foo</option><option value="bar">bar</option></select>
 <input name="jfn_4" type="text" class="integer" value="3">
@@ -72,4 +72,4 @@ The default templates (residing in `jfn.template`) look like this by default:
   }
 }</pre></code></td>
   <tr>
-</table>```
+</table>
