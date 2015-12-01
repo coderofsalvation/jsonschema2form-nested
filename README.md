@@ -1,7 +1,7 @@
 JFN
 ===
 
-<img alt="" src="http://www.gifbin.com/bin/102009/1254478578_robot_hand.gif"/>
+<img alt="" src="http://www.gifbin.com/bin/102009/1254478578_robot_hand.gif"/><br>
 nested jsonschema html form builder: A simple javascript based form generator based on json-schema.
 
 * zero dependencies
