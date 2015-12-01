@@ -1,10 +1,11 @@
 {
   "name": "jsonschema2form-nested",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "nested jsonschema 2 html form generator: lightweight, zero dependency, vanilla javascript, browsercompatible, extendable",
   "main": "index.js",
   "scripts":{
-    "compile": ".hooks/pre-commit; browserify -r . | uglifyjs -o jsonschema2form-nested.min.js"
+    "compile": ".hooks/pre-commit; browserify -r . | uglifyjs -o jsonschema2form-nested.min.js",
+    "test": "cake test"
   },
   "directories": {
     "test": "test"
