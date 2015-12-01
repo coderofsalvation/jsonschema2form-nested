@@ -77,6 +77,21 @@ jsdom.env html, ["http://code.jquery.com/jquery.js"], (err, window) ->
       properties:
         foo: type: "string", typehint: "rich"
     data: {foo:"bar",bar:3}
+  
+  runTest 
+    title: "arrays"
+    schema: 
+      type: "object"
+      properties:
+        persons: 
+          type: "array"
+          items: [{
+            name:
+              type: "string"
+            age:
+              type: "integer"
+            }]
+    data: {persons:[{name:"john doe",age:12}] }
 
   out += '</body></html>'
   require('fs').writeFileSync __dirname+"/test.html", out

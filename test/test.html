@@ -18,9 +18,8 @@ For docs see <a href="https://github.com/coderofsalvation/jsonschema2form-nested
     <div class="panel panel-body">
       <table style='width:100%'>
         <tr>
-          <td style='width:50%;vertical-align:top'><fieldset class="jfn_2"><select><option value=""></option><option value="foo">foo</option><option value="bar">bar</option></select>
-<input name="jfn_4" type="text" class="integer" value="3">
-<br>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_2"><span><select><option value=""></option><option value="foo">foo</option><option value="bar">bar</option></select></span>
+<span><input type="text" value="3" id="jfn_4" class="integer ">integers are nice</span>
 </fieldset></td>
           <td>
               <b>data:</b><hr>
@@ -60,7 +59,7 @@ For docs see <a href="https://github.com/coderofsalvation/jsonschema2form-nested
     <div class="panel panel-body">
       <table style='width:100%'>
         <tr>
-          <td style='width:50%;vertical-align:top'><fieldset class="jfn_5"><span><label></label><input type="text" value="bar" id="" class="string "></span>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_5"><span><input type="text" value="bar" id="jfn_6" class="string "></span>
 </fieldset></td>
           <td>
               <b>data:</b><hr>
@@ -75,6 +74,50 @@ For docs see <a href="https://github.com/coderofsalvation/jsonschema2form-nested
     &quot;foo&quot;: {
       &quot;type&quot;: &quot;string&quot;,
       &quot;typehint&quot;: &quot;rich&quot;
+    }
+  }
+}</pre></code>
+          </td>
+        <tr>
+      </table>
+    </div>
+  </div>
+</div>    
+<div class="panel panel-default">
+  <div class="panel panel-primary">
+    <div class="panel panel-heading">
+      Example: arrays
+    </div>
+    <div class="panel panel-body">
+      <table style='width:100%'>
+        <tr>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_7"><span class="jfn_8 array"><button class="add_button" name="jfn_8">+</button><fieldset class="jfn_8"><button class="del_button" name="jfn_9">X</button></fieldset></span></fieldset></td>
+          <td>
+              <b>data:</b><hr>
+              <code><pre>{
+  &quot;persons&quot;: [
+    {
+      &quot;name&quot;: &quot;john doe&quot;,
+      &quot;age&quot;: 12
+    }
+  ]
+}</pre></code>
+              <b>schema:</b><hr>
+              <code><pre>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;persons&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: [
+        {
+          &quot;name&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;age&quot;: {
+            &quot;type&quot;: &quot;integer&quot;
+          }
+        }
+      ]
     }
   }
 }</pre></code>

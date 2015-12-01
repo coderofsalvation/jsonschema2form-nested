@@ -7,6 +7,7 @@ nested jsonschema html form builder: A simple javascript based form generator ba
 * zero dependencies
 * easily extendable 
 * finally a jsonform generator which supports nesting
+* serialize (nested) formvalues back to json
 * 3.8K gzipped (unlike JSONform or apalca)
 
 ## Usage 

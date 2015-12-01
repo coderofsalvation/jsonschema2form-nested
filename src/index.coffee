@@ -7,21 +7,24 @@ JFN =
   mustache: require 'micromustache'
   verbose: 0
   htmlEncodeFields: ['title','description']
-  template_data: 
-    "foo":"bar"
-    "foofunc": () -> "hi"
   template:
     nestingtag: 'fieldset'
     nesting: '<fieldset class="{{id}}">{{html}}</fieldset>'
+    button_add: '<button class="add_button" name="{{id}}">+</button>'
+    label: '<label>{{title}}</label>'
     types:
-      default: '<span>{{#title}}<label>{{title}}</label>{{/title}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{class}}"/>{{description}}</span>'+"\n"
+      default: '<span>{{label}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{attributes}}"/>{{description}}</span>'+"\n"
+      boolean_selected: 'checked="checked"'
       'string.rich': '<span>{{#title}}<label>{{title}}</label>{{/title}}<textarea>{{data}}</textarea></span>'+"\n"
-      string_enum: '<select>{{values}}</select>'+"\n"
+      string_enum: '<span>{{label}}<select>{{values}}</select></span>'+"\n"
       string_enum_value: '<option value="{{value}}" {{selected}}>{{value}}</option>'
       string_enum_value_selected: 'selected="selected"'
 
 for type in ["integer","number","boolean","string","string.rich"]
   JFN.template.types[ type ] = JFN.template.types.default
+
+JFN.template_data =
+    "label": () -> ( if @title then JFN.mustache.render JFN.template.label, {title:@title} else "" )
 
 JFN.htmlEncode = (html) ->
   String(html).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace />/g, '&gt;'
@@ -120,6 +123,7 @@ JFN.renderHTML = (schema, name, data, options) ->
   schema = @fixupSchema(schema)
   schema = JSON.parse JSON.stringify schema
   @extend schema, @template_data
+  schema.id = id
   schema.data = @htmlEncode data
   @iddata[id] =
     schema: schema
@@ -136,7 +140,6 @@ JFN.renderHTML = (schema, name, data, options) ->
     when 'undefined'
       type = 'object'
     when 'object'
-
       ###
       	If multiple types are allowed attempt to use array, since it is
       	the most complex one that we support.
@@ -144,7 +147,6 @@ JFN.renderHTML = (schema, name, data, options) ->
       	For example:
       		[ 'string', 'array' ]
       ###
-
       if -1 != schema.type.indexOf('array')
         type = 'array'
       else
@@ -166,10 +168,6 @@ JFN.renderHTML = (schema, name, data, options) ->
     html += @mustache.render @template.types.string_enum, schema
   else
     classname = type
-    if schema.advanced
-      classname += ' advanced'
-    if schema.readonly
-      classname += ' readonly'
     switch type
       when 'string'
         if not schema.typehint?
@@ -178,52 +176,30 @@ JFN.renderHTML = (schema, name, data, options) ->
           schema.data = @htmlDecode schema.data
           html += @mustache.render @template.types[ type+'.'+schema.typehint ], schema
         break;
-      # fallthrough 
 
+      # fallthrough 
       when 'number', 'integer', 'boolean'
-        inputtype = 'text'
-        # TODO	Add support for html5 form types, possibly use range for
-        #		numbers with a min and max?
-        if type == 'boolean'
-          inputtype = 'checkbox'
-        if schema.hidden
-          inputtype = 'hidden'
-        html += '<input name="' + id + '" type="' + inputtype + '" class="' + classname + '"'
-        if schema.placeholder
-          html += ' placeholder="' + schema.placeholder + '" '
-        if type == 'boolean' and data
-          html += ' checked="checked"'
-        else if data
-          html += ' value="' + @htmlEncode(data.toString()) + '"'
-        if schema.readonly
-          html += ' readonly'
-        html += '/>\n'
-        if !schema.hidden
-          html += '<br' + (if schema.advanced then ' class="advanced"' else '') + '/>\n'
+        schema.attributes = @mustache.render @template.types.boolean_selected, schema if type == "boolean" and data
+        html += @mustache.render @template.types[ type ], schema
       when 'array'
         item = undefined
         if item = schema.items
           @iddata[id].action = 'add'
           @iddata[id].item = item
           html += '<span class="' + id + ' ' + classname + '">'
-          if !schema.readonly
-            html += '<button class="add_button" name="' + id + '">+</button>'
-          switch Object.toString.call(data)
-            when '[object Array]', '[object Undefined]', '[object Null]'
-
+          html += @mustache.render @template.button_add, schema 
+          switch typeof data 
+            when 'object'
               ### Leave alone ###
-
+              console.log "ignoring"
             else
-
               ###
               	Assume that this is intended to be an array of this
               	item, which is possible if the item has multiple
               	allowed types.
-
               	Let validation sort it out later. Just try to render
               	it now.
               ###
-
               data = [ data ]
               break
           if data
