@@ -150,6 +150,7 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 	if (title && title.length > 0 && !schema.hidden) {
 		html += '<label';
 
+		if (schema.advanced ) html += ' class="advanced"';
 		if (schema.description) {
 			html += ' title="';
 			html += htmlEncode(schema.description);
@@ -163,7 +164,9 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 	}
 
 	if (schema['enum'] && !schema.hidden) {
-		html += '<select name="' + id + '">\n';
+		html += '<select name="' + id +'"';
+		if (schema.advanced ) html += ' class="advanced"';
+    html += '>\n';
 
 		if (!schema.required) {
 			/* Insert a blank item; this field isn't required */
@@ -180,10 +183,12 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 			html += '>' + e + '</option>';
 		}
 
-		html += '</select><br/>\n';
+		html += '</select>';
+    html += '<br'+ (schema.advanced ? ' class="advanced"' : '') +'/>\n';
 	} else {
 		var classname = type;
 
+		if (schema.advanced) classname += ' advanced';
 		if (schema.readonly) {
 			classname += ' readonly';
 		}
@@ -205,9 +210,9 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 					html += '>';
 					if (data) {
 						html += htmlEncode(data.toString());
-					}
-					html += '</textarea><br/>';
-
+					}else if( schema.placeholder ) html += htmlEncode( schema.placeholder );
+					html += '</textarea>';
+          html += '<br'+ (schema.advanced ? ' class="advanced"' : '') +'/>\n';
 					break;
 				}
 
@@ -231,11 +236,9 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 
 				html += '<input name="' + id + '" type="' + inputtype +
 								'" class="' + classname + '"';
-
-				if (type == 'boolean') {
-					if (data) {
-						html += ' checked';
-					}
+        if( schema.placeholder ) html += ' placeholder="'+schema.placeholder+'" ';
+				if (type == 'boolean' && data ) {
+          html += ' checked="checked"';
 				} else if (data) {
 					html += ' value="' + htmlEncode(data.toString()) + '"';
 				}
@@ -246,7 +249,7 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 				html += '/>\n';
 
 				if (!schema.hidden) {
-					html += '<br />\n';
+          html += '<br'+ (schema.advanced ? ' class="advanced"' : '') +'/>\n';
 				}
 				break;
 
@@ -303,7 +306,8 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 						}
 					}
 
-					html += '</span><br/>';
+					html += '</span>';
+          html += '<br'+ (schema.advanced ? ' class="advanced"' : '') +'/>\n';
 				}
 				break;
 
@@ -313,7 +317,6 @@ JSB.prototype.renderHTML = function(schema, name, data, options)
 					var properties	= Object.keys(schema.properties);
 
 					html += '<fieldset name="' + id + '" class="' + classname + '">\n';
-
 					for (var i = 0, p; p = schema.properties[properties[i]]; i++) {
 						html += this.renderHTML(p, properties[i], (data || {})[properties[i]], options);
 					}
