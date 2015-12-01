@@ -1,0 +1,31 @@
+{
+  "name": "jsonschema2form-nested",
+  "version": "1.0.0",
+  "description": "jsb ===",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "micromustache": "^2.1.26",
+    "tv4-node": "^0.0.0"
+  },
+  "devDependencies": {
+    "jsdom": "^7.1.0",
+    "jsdom-nogyp": "^0.8.3",
+    "tinydown": "^0.1.9"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://coderofsalvation@github.com/coderofsalvation/jsonschema2form-nested.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coderofsalvation/jsonschema2form-nested/issues"
+  },
+  "homepage": "https://github.com/coderofsalvation/jsonschema2form-nested#readme"
+}
