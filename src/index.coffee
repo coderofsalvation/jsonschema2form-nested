@@ -167,7 +167,8 @@ JFN.renderHTML = (schema, name, data, options) ->
     e = undefined
     while e = schema['enum'][i]
       schema.value = e
-      schema.attributes = @template.types.string_enum_value_selected if data and data == e
+      schema.selected = ""
+      schema.selected = @template.types.string_enum_value_selected if data and data == e
       values.push @mustache.render @template.types.string_enum_value, schema
       i++
     schema.values = values.join ''
@@ -247,7 +248,6 @@ JFN.render = (options) ->
   @element = options.element if options.element?
   @data = options.data if options.data?
   html = @renderHTML(@schema, null, @data, options or {})
-  # console.log(html);
   @element.innerHTML = html
   @element.addEventListener 'click', ((e) ->
     `var container`
