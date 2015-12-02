@@ -1,5 +1,4 @@
 jsdom = require('jsdom')
-tinydown = require('tinydown')
 
 html = '<body><div id="form"></div></body>';
 
@@ -94,7 +93,10 @@ jsdom.env html, ["http://code.jquery.com/jquery.js"], (err, window) ->
     data: {persons:[{name:"john doe",age:12}] }
 
   out += '</body></html>'
-  require('fs').writeFileSync __dirname+"/test.html", out
-  console.log out
+  orig = require('fs').readFileSync(__dirname+"/testout.html").toString()
+  require('fs').writeFileSync __dirname+"/testout.html", out
+  if out != orig and not process.env.DEBUG?
+    console.log "generated output does not match desired output :/"
+    process.exit 1 
   return
 

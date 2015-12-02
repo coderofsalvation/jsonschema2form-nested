@@ -1,129 +1,73 @@
 <html>
   <head>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- load MUI -->
+    <link href="https://cdn.muicss.com/mui-0.2.6/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.muicss.com/mui-0.2.6/js/mui.min.js"></script>
+
+    <script src="../jsonschema2form-nested.min.js"></script>
+    <style type="text/css">
+      label { color:#888 }
+      #form div { color:#55F }
+    </style>  
+    <script>
+      function monkeyPatchToFitCSS(jfn){
+        // you can ignore this, just monkeypatching the templates to fit the CSS 
+        jfn.template.nestingtag = 'div'
+        jfn.template.nesting = jfn.template.nesting.replace(/fieldset/,'div');
+        arr = ["string","integer","number"]
+        for( i in arr )
+          jfn.template.types[ arr[i] ] = jfn.template.types.default.replace(/^<div>/,'<div class="mui-textfield">');
+        jfn.template.types.string_enum = jfn.template.types.string_enum.replace(/^<div>/,'<div class="mui-select">');
+        //jfn.template.button_add = jfn.template.button_add.replace(/class="/,'class="mui-btn mui-btn--fab mui-btn--primary ');
+      }
+    </script>
   </head> 
 <body style="padding:50px">
+  <div class="mui-container">
+     <div class="mui-panel">
+        <div id="form"></div>
+     </div>
+  </div>
+  <script>
+    jfn = require("jsonschema2form-nested");
 
-<h1>JFN Examples<br><img alt="" style='width:100px' src="http://www.gifbin.com/bin/102009/1254478578_robot_hand.gif"/></h1>
-<br>
-For docs see <a href="https://github.com/coderofsalvation/jsonschema2form-nested">here</a><br><Br>    
-<div class="panel panel-default">
-  <div class="panel panel-primary">
-    <div class="panel panel-heading">
-      Example: simple
-    </div>
-    <div class="panel panel-body">
-      <table style='width:100%'>
-        <tr>
-          <td style='width:50%;vertical-align:top'><fieldset class="jfn_2"><span><select><option value=""></option><option value="foo">foo</option><option value="bar">bar</option></select></span>
-<span><input type="text" value="3" id="jfn_4" class="integer ">integers are nice</span>
-</fieldset></td>
-          <td>
-              <b>data:</b><hr>
-              <code><pre>{
-  &quot;foo&quot;: &quot;bar&quot;,
-  &quot;bar&quot;: 3
-}</pre></code>
-              <b>schema:</b><hr>
-              <code><pre>{
-  &quot;type&quot;: &quot;object&quot;,
-  &quot;properties&quot;: {
-    &quot;foo&quot;: {
-      &quot;type&quot;: &quot;string&quot;,
-      &quot;enum&quot;: [
-        &quot;foo&quot;,
-        &quot;bar&quot;
-      ],
-      &quot;title&quot;: &quot;Your title&quot;
-    },
-    &quot;bar&quot;: {
-      &quot;type&quot;: &quot;integer&quot;,
-      &quot;description&quot;: &quot;integers are nice&quot;
-    }
-  }
-}</pre></code>
-          </td>
-        <tr>
-      </table>
-    </div>
-  </div>
-</div>    
-<div class="panel panel-default">
-  <div class="panel panel-primary">
-    <div class="panel panel-heading">
-      Example: type hinting
-    </div>
-    <div class="panel panel-body">
-      <table style='width:100%'>
-        <tr>
-          <td style='width:50%;vertical-align:top'><fieldset class="jfn_5"><span><input type="text" value="bar" id="jfn_6" class="string "></span>
-</fieldset></td>
-          <td>
-              <b>data:</b><hr>
-              <code><pre>{
-  &quot;foo&quot;: &quot;bar&quot;,
-  &quot;bar&quot;: 3
-}</pre></code>
-              <b>schema:</b><hr>
-              <code><pre>{
-  &quot;type&quot;: &quot;object&quot;,
-  &quot;properties&quot;: {
-    &quot;foo&quot;: {
-      &quot;type&quot;: &quot;string&quot;,
-      &quot;typehint&quot;: &quot;rich&quot;
-    }
-  }
-}</pre></code>
-          </td>
-        <tr>
-      </table>
-    </div>
-  </div>
-</div>    
-<div class="panel panel-default">
-  <div class="panel panel-primary">
-    <div class="panel panel-heading">
-      Example: arrays
-    </div>
-    <div class="panel panel-body">
-      <table style='width:100%'>
-        <tr>
-          <td style='width:50%;vertical-align:top'><fieldset class="jfn_7"><span class="jfn_8 array"><button class="add_button" name="jfn_8">+</button><fieldset class="jfn_8"><button class="del_button" name="jfn_9">X</button></fieldset></span></fieldset></td>
-          <td>
-              <b>data:</b><hr>
-              <code><pre>{
-  &quot;persons&quot;: [
-    {
-      &quot;name&quot;: &quot;john doe&quot;,
-      &quot;age&quot;: 12
-    }
-  ]
-}</pre></code>
-              <b>schema:</b><hr>
-              <code><pre>{
-  &quot;type&quot;: &quot;object&quot;,
-  &quot;properties&quot;: {
-    &quot;persons&quot;: {
-      &quot;type&quot;: &quot;array&quot;,
-      &quot;items&quot;: [
-        {
-          &quot;name&quot;: {
-            &quot;type&quot;: &quot;string&quot;
+    monkeyPatchToFitCSS(jfn);
+    jfn.render({
+      element: document.getElementById("form"),
+      schema: {
+        type: "object",
+        properties: {
+          foo: {
+            type: "string",
+            "enum": ["foo", "bar"],
+            title: "Your title"
           },
-          &quot;age&quot;: {
-            &quot;type&quot;: &quot;integer&quot;
+          flop: {
+            type: "string",
+            title: "Your title"
+          },
+          bar: {
+            type: "integer",
+            description: "integers are nice"
+          },
+          persons: {
+            type: "array",
+            items: [{
+              type: "object",
+              properties: {
+                name: { type: "string", title: "Name" },
+                age:  { type: "integer", title: "Age" }
+              }
+            }]
           }
         }
-      ]
-    }
-  }
-}</pre></code>
-          </td>
-        <tr>
-      </table>
-    </div>
-  </div>
-</div></body></html>
+      },
+      data: {
+        foo: "bar",
+        bar: 3
+      }
+    });
+  </script>
+</body>
+</html>
