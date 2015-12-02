@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "nested jsonschema 2 html form generator: lightweight, zero dependency, vanilla javascript, browsercompatible, extendable",
   "main": "index.js",
-  "scripts":{
+  "scripts": {
     "compile": ".hooks/pre-commit; browserify -r .:jsonschema2form-nested | uglifyjs -o jsonschema2form-nested.min.js",
     "test": "cake test"
   },
@@ -15,7 +15,7 @@
     "tv4-node": "^0.0.0"
   },
   "devDependencies": {
-    "jsdom": "^6.5.1"
+    "jsdom": "^7.1.0"
   },
   "repository": {
     "type": "git",
