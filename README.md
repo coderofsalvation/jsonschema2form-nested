@@ -64,6 +64,11 @@ Global vars/functions are supported too:
     jfn.template.types.integer = '<input type='number' value="{{data}}" class="{{foo}} {{world}}"/>';
     jfn.render({..})
 
+You even apply mustache on it recursively and/or create conditionals, exceptions etc:
+
+    jfn.template_data.label = () -> 
+      ( if @title? then jfn.mustache.render "<h3>{{title}}</h3>", {title:@title} else "" )
+
 ## TODO
 
 * selective html encoding based on propertyname instead of field

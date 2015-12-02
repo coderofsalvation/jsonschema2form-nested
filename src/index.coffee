@@ -11,20 +11,22 @@ JFN =
     nestingtag: 'fieldset'
     nesting: '<fieldset class="{{id}}">{{html}}</fieldset>'
     button_add: '<button class="add_button" name="{{id}}">+</button>'
-    label: '<label>{{title}}</label>'
+    label: '<div><label>{{title}}</label></div>'
     types:
-      default: '<span>{{label}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{attributes}}"/>{{description}}</span>'+"\n"
+      default: '<div>{{label}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{attributes}}"/>{{description}}</div>'+"\n"
       boolean_selected: 'checked="checked"'
-      'string.rich': '<span>{{#title}}<label>{{title}}</label>{{/title}}<textarea>{{data}}</textarea></span>'+"\n"
-      string_enum: '<span>{{label}}<select>{{values}}</select></span>'+"\n"
+      'string.rich': '<div>{{#title}}<label>{{title}}</label>{{/title}}<textarea>{{data}}</textarea></div>'+"\n"
+      string_enum: '<div>{{label}}<select>{{values}}</select></div>'+"\n"
       string_enum_value: '<option value="{{value}}" {{selected}}>{{value}}</option>'
       string_enum_value_selected: 'selected="selected"'
 
 for type in ["integer","number","boolean","string","string.rich"]
   JFN.template.types[ type ] = JFN.template.types.default
 
-JFN.template_data =
-    "label": () -> ( if @title then JFN.mustache.render JFN.template.label, {title:@title} else "" )
+JFN.template_data = {}
+JFN.template_data.label = () -> 
+  @title = "&nbsp" if not @title? 
+  JFN.mustache.render JFN.template.label, {title:@title} 
 
 JFN.htmlEncode = (html) ->
   String(html).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace />/g, '&gt;'
@@ -123,6 +125,10 @@ JFN.renderHTML = (schema, name, data, options) ->
   schema = @fixupSchema(schema)
   schema = JSON.parse JSON.stringify schema
   @extend schema, @template_data
+
+  # rebind so 'this' is static so mustache won't mess 'this' up ...nice..2 wordjokes! :)
+  schema[k] = (v).bind( schema ) if typeof v == 'function' for k,v of JFN.template_data
+
   schema.id = id
   schema.data = @htmlEncode data
   @iddata[id] =
@@ -184,24 +190,20 @@ JFN.renderHTML = (schema, name, data, options) ->
       when 'array'
         item = undefined
         if item = schema.items
+          item = item[0] if item[0]?
           @iddata[id].action = 'add'
           @iddata[id].item = item
           html += '<span class="' + id + ' ' + classname + '">'
           html += @mustache.render @template.button_add, schema 
-          switch typeof data 
-            when 'object'
-              ### Leave alone ###
-              console.log "ignoring"
-            else
-              ###
-              	Assume that this is intended to be an array of this
-              	item, which is possible if the item has multiple
-              	allowed types.
-              	Let validation sort it out later. Just try to render
-              	it now.
-              ###
-              data = [ data ]
-              break
+          ###
+            Assume that this is intended to be an array of this
+            item, which is possible if the item has multiple
+            allowed types.
+            Let validation sort it out later. Just try to render
+            it now.
+          ###
+          data = [ data ]
+          break
           if data
             was = item.readonly or false
             if schema.preserveItems

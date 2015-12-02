@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  </head> 
+<body style="padding:50px">
+
+<h1>JFN Examples<br><img alt="" style='width:100px' src="http://www.gifbin.com/bin/102009/1254478578_robot_hand.gif"/></h1>
+<br>
+For docs see <a href="https://github.com/coderofsalvation/jsonschema2form-nested">here</a><br><Br>    
+<div class="panel panel-default">
+  <div class="panel panel-primary">
+    <div class="panel panel-heading">
+      Example: simple
+    </div>
+    <div class="panel panel-body">
+      <table style='width:100%'>
+        <tr>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_2"><div><div><label>Your title</label></div><select><option value=""></option><option value="foo">foo</option><option value="bar">bar</option></select></div>
+<div><div><label>&nbsp;</label></div><input type="text" value="3" id="jfn_4" class="integer ">integers are nice</div>
+</fieldset></td>
+          <td>
+              <b>data:</b><hr>
+              <code><pre>{
+  &quot;foo&quot;: &quot;bar&quot;,
+  &quot;bar&quot;: 3
+}</pre></code>
+              <b>schema:</b><hr>
+              <code><pre>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;foo&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;enum&quot;: [
+        &quot;foo&quot;,
+        &quot;bar&quot;
+      ],
+      &quot;title&quot;: &quot;Your title&quot;
+    },
+    &quot;bar&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;integers are nice&quot;
+    }
+  }
+}</pre></code>
+          </td>
+        <tr>
+      </table>
+    </div>
+  </div>
+</div>    
+<div class="panel panel-default">
+  <div class="panel panel-primary">
+    <div class="panel panel-heading">
+      Example: type hinting
+    </div>
+    <div class="panel panel-body">
+      <table style='width:100%'>
+        <tr>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_5"><div><div><label>&nbsp;</label></div><input type="text" value="bar" id="jfn_6" class="string "></div>
+</fieldset></td>
+          <td>
+              <b>data:</b><hr>
+              <code><pre>{
+  &quot;foo&quot;: &quot;bar&quot;,
+  &quot;bar&quot;: 3
+}</pre></code>
+              <b>schema:</b><hr>
+              <code><pre>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;foo&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;typehint&quot;: &quot;rich&quot;
+    }
+  }
+}</pre></code>
+          </td>
+        <tr>
+      </table>
+    </div>
+  </div>
+</div>    
+<div class="panel panel-default">
+  <div class="panel panel-primary">
+    <div class="panel panel-heading">
+      Example: arrays
+    </div>
+    <div class="panel panel-body">
+      <table style='width:100%'>
+        <tr>
+          <td style='width:50%;vertical-align:top'><fieldset class="jfn_7"><span class="jfn_8 array"><button class="add_button" name="jfn_8">+</button></span></fieldset></td>
+          <td>
+              <b>data:</b><hr>
+              <code><pre>{
+  &quot;persons&quot;: [
+    {
+      &quot;name&quot;: &quot;john doe&quot;,
+      &quot;age&quot;: 12
+    }
+  ]
+}</pre></code>
+              <b>schema:</b><hr>
+              <code><pre>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;persons&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: [
+        {
+          &quot;name&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;age&quot;: {
+            &quot;type&quot;: &quot;integer&quot;
+          }
+        }
+      ]
+    }
+  }
+}</pre></code>
+          </td>
+        <tr>
+      </table>
+    </div>
+  </div>
+</div></body></html>
