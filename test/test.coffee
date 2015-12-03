@@ -24,6 +24,7 @@ jsdom.env html, ["http://code.jquery.com/jquery.js"], (err, window) ->
     '''
 
   runTest = (opts) ->
+    console.dir opts.data
     args = 
       verbose: 1
       element: form
@@ -59,6 +60,9 @@ jsdom.env html, ["http://code.jquery.com/jquery.js"], (err, window) ->
     out = out.replace '#{json}', jfn.htmlEncode json
     out = out.replace '#{data}', jfn.htmlEncode JSON.stringify(opts.data,null,2)
     out = out.replace '#{value}', value
+    if JSON.stringify(jfn.toJSON(form)) == "{}"
+      console.log "\n!!! out:\n\n"+JSON.stringify jfn.toJSON(form),null,2
+      process.exit 1 
 
   runTest 
     title: "simple"

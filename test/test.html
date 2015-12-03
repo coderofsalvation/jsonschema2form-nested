@@ -10,18 +10,8 @@
       label { color:#888 }
       #form div { color:#55F }
     </style>  
-    <script>
-      function monkeyPatchToFitCSS(jfn){
-        // you can ignore this, just monkeypatching the templates to fit the CSS 
-        jfn.template.nestingtag = 'div'
-        jfn.template.nesting = jfn.template.nesting.replace(/fieldset/,'div');
-        arr = ["string","integer","number"]
-        for( i in arr )
-          jfn.template.types[ arr[i] ] = jfn.template.types.default.replace(/^<div>/,'<div class="mui-textfield">');
-        jfn.template.types.string_enum = jfn.template.types.string_enum.replace(/^<div>/,'<div class="mui-select">');
-        //jfn.template.button_add = jfn.template.button_add.replace(/class="/,'class="mui-btn mui-btn--fab mui-btn--primary ');
-      }
-    </script>
+    <!-- you can ignore this, just monkeypatching the templates to fit the mui CSS -->
+    <script src="../themes/mui.js"></script>
   </head> 
 <body style="padding:50px">
   <div class="mui-container">
@@ -31,8 +21,8 @@
   </div>
   <script>
     jfn = require("jsonschema2form-nested");
+    require("jsonschema2form-nested-theme")(jfn); // ignore this, just monkeypatching templates to fit mui CSS 
 
-    monkeyPatchToFitCSS(jfn);
     jfn.render({
       element: document.getElementById("form"),
       schema: {
