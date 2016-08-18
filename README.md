@@ -10,6 +10,8 @@ nested jsonschema html form builder: A simple javascript based form generator ba
 * serialize (nested) formvalues back to json
 * 3.8K gzipped (unlike JSONform or apalca)
 
+<img src="https://raw.githubusercontent.com/coderofsalvation/jsonschema2form-nested/master/screenshot.png"/>
+
 ## Usage 
 
     npm install jsonschema2form
@@ -39,11 +41,17 @@ The default templates (residing in `jfn.template`) look like this by default:
 
     jfn.template:
       nestingtag: 'fieldset'
-      nesting: '<fieldset class="{{id}}">{{html}}</fieldset>'
+      nesting: '<fieldset class="{{id}} nested">{{name}}{{button_del}}{{html}}</fieldset>'
+      array_header: '<span class="array {{id}} {{class}}">{{title}}'
+      array_footer: '</span>'
+      button_add: '<button class="button_add" name="{{id}}">+ {{title}}</button>'
+      button_del: '<button class="button_del" name="{{id}}">&ndash;</button>'
+      label: '<div><label class="hide">{{title}}</label></div>'
       types:
-        default: '<span>{{#title}}<label>{{title}}</label>{{/title}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{class}}"/>{{description}}</span>'+"\n"
-        'string.rich': '<span>{{#title}}<label>{{title}}</label>{{/title}}<textarea>{{data}}</textarea></span>'+"\n"
-        string_enum: '<select>{{values}}</select>'+"\n"
+        default: '<div>{{label}}<input type="text" value="{{data}}" id="{{id}}" placeholder="{{placeholder}}" class="{{type}} {{attributes}}"/><span class="description">{{description}}</span></div>'+"\n"
+        boolean_selected: 'checked="checked"'
+        'string.rich': '<div>{{#title}}<label class="hide">{{title}}</label>{{/title}}<textarea placeholder="{{description}}">{{data}}</textarea></div>'+"\n"
+        string_enum: '<div>{{label}}<select>{{values}}</select></div>'+"\n"
         string_enum_value: '<option value="{{value}}" {{selected}}>{{value}}</option>'
         string_enum_value_selected: 'selected="selected"'
     

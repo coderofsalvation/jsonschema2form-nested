@@ -1,6 +1,6 @@
 {
   "name": "jsonschema2form-nested",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "nested jsonschema 2 html form generator: lightweight, zero dependency, vanilla javascript, browsercompatible, extendable",
   "main": "index.js",
   "scripts": {

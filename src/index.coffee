@@ -9,13 +9,16 @@ JFN =
   htmlEncodeFields: ['title','description']
   template:
     nestingtag: 'fieldset'
-    nesting: '<fieldset class="{{id}}">{{html}}</fieldset>'
-    button_add: '<button class="add_button" name="{{id}}">+</button>'
-    label: '<div><label>{{title}}</label></div>'
+    nesting: '<fieldset class="{{id}} nested">{{name}}{{button_del}}{{html}}</fieldset>'
+    array_header: '<span class="array {{id}} {{class}}">{{title}}'
+    array_footer: '</span>'
+    button_add: '<button class="button_add" name="{{id}}">+ {{title}}</button>'
+    button_del: '<button class="button_del" name="{{id}}">&ndash;</button>'
+    label: '<div><label class="hide">{{title}}</label></div>'
     types:
-      default: '<div>{{label}}<input type="text" value="{{data}}" id="{{id}}" class="{{type}} {{attributes}}"/>{{description}}</div>'+"\n"
+      default: '<div>{{label}}<input type="text" value="{{data}}" id="{{id}}" placeholder="{{placeholder}}" class="{{type}} {{attributes}}"/><span class="description">{{description}}</span></div>'+"\n"
       boolean_selected: 'checked="checked"'
-      'string.rich': '<div>{{#title}}<label>{{title}}</label>{{/title}}<textarea>{{data}}</textarea></div>'+"\n"
+      'string.rich': '<div>{{#title}}<label class="hide">{{title}}</label>{{/title}}<textarea placeholder="{{description}}">{{data}}</textarea></div>'+"\n"
       string_enum: '<div>{{label}}<select>{{values}}</select></div>'+"\n"
       string_enum_value: '<option value="{{value}}" {{selected}}>{{value}}</option>'
       string_enum_value_selected: 'selected="selected"'
@@ -118,7 +121,7 @@ JFN.fixupSchema = (schema) ->
 
 JFN.renderHTML = (schema, name, data, options) ->
   throw 'JFN_SCHEMA_UNDEFINED' if not schema?
-  data = {} if not data?
+  data = "" if not data?
   `var i`
   `var i`
   id = @uniqueName()
@@ -140,6 +143,7 @@ JFN.renderHTML = (schema, name, data, options) ->
   type = undefined
   for i in @htmlEncodeFields
     schema[i] = @htmlEncode schema[i] if schema[i]?
+  schema.title = schema.title || name
   switch typeof schema.type
     when 'string'
       type = schema.type
@@ -177,12 +181,14 @@ JFN.renderHTML = (schema, name, data, options) ->
     classname = type
     switch type
       when 'string'
+        schema.placeholder = schema.placeholder || schema.title || name || schema.description
+        schema.placeholder = "Enter "+schema.placeholder.toLowerCase()+" here" if schema.placeholder
         if not schema.typehint?
           html += @mustache.render @template.types.string, schema
         else
           schema.data = @htmlDecode schema.data
           html += @mustache.render @template.types[ type+'.'+schema.typehint ], schema
-        break;
+        break
 
       # fallthrough 
       when 'number', 'integer', 'boolean'
@@ -194,8 +200,10 @@ JFN.renderHTML = (schema, name, data, options) ->
           item = item[0] if item[0]?
           @iddata[id].action = 'add'
           @iddata[id].item = item
-          html += '<span class="' + id + ' ' + classname + '">'
-          html += @mustache.render @template.button_add, schema 
+          html += @mustache.render @template.array_header,
+            id: id
+            class: classname
+          html += @mustache.render @template.button_add, schema
           ###
             Assume that this is intended to be an array of this
             item, which is possible if the item has multiple
@@ -217,9 +225,16 @@ JFN.renderHTML = (schema, name, data, options) ->
             html += @mustache.render @template.nesting, { html: values.join(''), id: id }
             if schema.preserveItems
               item.readonly = was
+          html += @mustache.render @template.array_footer, {}
       when 'object'
         if schema.properties
           i = 0; p = undefined ; values = ""
+          if options.schema.button_del
+            values += @mustache.render @template.button_del, {id:id} 
+            @iddata[id] =
+              schema: options.schema
+              data: null
+              action: 'del'
           properties = Object.keys(schema.properties)
           while p = schema.properties[properties[i]]
             values += @renderHTML(p, properties[i], (data or {})[properties[i]], options)
@@ -234,13 +249,9 @@ JFN.renderHTML = (schema, name, data, options) ->
 JFN.insertArrayItem = (item, data, options, readonly) ->
   id = @uniqueName()
   html = ''
-  if !readonly
-    html += '<button class="del_button" name="' + id + '">X</button>'
+  data = data || {}
+  options.schema.button_del = true if not options.schema.readonly 
   html += @renderHTML(item, null, data, options)
-  @iddata[id] =
-    schema: item
-    data: null
-    action: 'del'
   html
 
 JFN.render = (options) ->
@@ -255,14 +266,23 @@ JFN.render = (options) ->
     target = null
     if e
       target = e.toElement or e.target
-    if !target or !(detail = @getDetail(target))
-      return
+    console.dir(e)
+    console.log target.tagName
+    if target.tagName.toLowerCase() is "input"
+      Array.prototype.slice.call( document.querySelectorAll("label") ).map (item) -> item.className = "hide"
+      Array.prototype.slice.call( document.querySelectorAll("span.description")  ).map (item) -> item.className = "description hide"
+      target.parentNode.querySelector("label").className = "animated bounce"
+      description = target.parentNode.querySelector("span.description")
+      description.className = "description" if description
+    return if !target or !(detail = @getDetail(target))
     switch detail.action
       when 'add'
         container = undefined
         item = undefined
-        if (container = target.parentNode) and (container = container.getElementsByTagName( @template.nestingtag ))
-          container = container[0]
+        #if (container = target.parentNode) and (container = container.querySelector('.button_add'))
+        #  container = container[0]
+        container = target.parentNode
+        console.dir container
         if !container and (container = document.createElement( @template.nestingtag ))
           if target.nextSibling
             target.parentNode.insertBefore container, target.nextSibling
@@ -278,6 +298,7 @@ JFN.render = (options) ->
         p = undefined
         if detail and target and (container = target.parentNode)
           p = container.parentNode
+          console.dir(p)
           p.removeChild container
           if !p.firstChild
             p.parentNode.removeChild p
@@ -308,13 +329,6 @@ JFN.getDetail = (el) ->
   null
 
 JFN.getValue = (element) ->
-  `var n`
-  `var i`
-  `var v`
-  `var n`
-  `var i`
-  `var n`
-  `var i`
   value = undefined
   detail = null
   switch element.nodeName.toLowerCase()
